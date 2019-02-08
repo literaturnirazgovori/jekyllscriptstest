@@ -1,0 +1,223 @@
+---
+layout: default
+disqus: true
+archive: false
+post_class: post-template
+comments: true
+---
+
+<!-- Begin Article
+================================================== -->
+<div class="container">
+    <div class="row">
+
+        <!-- Post Share -->
+        <div class="col-md-2 pl-0">
+            <div id="postviewscontainer" class="postviews"><span id="postViews"></span></div>
+            {% include share.html %}
+        </div>
+
+
+        <!-- Post -->
+        {% assign author = site.authors[page.author] %}
+
+        <div class="col-md-9 flex-first flex-md-unordered">
+            <div class="mainheading">
+
+                <!-- Author Box 
+                {% if page.author %}
+                <div class="row post-top-meta">
+                    <div class="col-md-2">
+                        <img class="author-thumb" src="{{ author.photo }}" alt="{{ author.display_name }}">
+                    </div>
+                    <div class="col-md-10">
+                        <a target="_blank" class="link-dark" href="{{ author.web }}">{{ author.display_name }}</a><a
+                            target="_blank" href="{{ author.twitter }}" class="btn follow">Follow</a>
+                        <span class="author-description">{{ author.description }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                -->
+                <!-- Post Title -->
+                <h1 class="posttitle">{{ page.title }}</h1>
+                <h2 class="postsubtitle">{{ page.subtitle }}</h2>
+            </div>
+            <div class="postinfo">
+                {% if page.author %}
+                <!--<img class="author-thumb" src="{{ author.photo }}" alt="{{ author.display_name }}">-->
+                {{ author.display_name }},
+                {% endif %}
+
+                <small>
+                    <span class="post-date"><time class="post-date">
+                            {% assign m = page.date | date: "%-m" %}
+                            {{ page.date | date: "%-d" }}
+                            {{site.data.months[m]}}
+                            {{ page.date | date: "%Y" }}
+                        </time></span>
+                    {% if page.last_modified_at %}
+                    (Updated: <time datetime="{{ page.last_modified_at | date_to_xmlschema }}" itemprop="dateModified">{{
+                        page.last_modified_at | date: "%b %-d, %Y" }}</time>)
+                    {% endif %}
+                </small>
+                <span class="postcategory">
+                    {% if page.category %}
+                    {% assign cat = site.data.categoriestext[page.category] %}
+                    <a href="/category/{{ cat.name }}">{{ cat.text }}</a>
+                    {% endif %}
+                </span>
+            </div>
+
+            <!-- Post Featured Image -->
+            {% if page.image %}
+
+            <a href="{% if page.image contains " ://" %}{{page.image }}{% else %}{{ page.image | absolute_url }}{%
+                endif %}" data-lightbox="image-1">
+                <img class="featured-image img-fluid post-image" src="{% if page.image contains " ://" %}{{page.image
+                    }}{% else %}{{ page.image | absolute_url }}{% endif %}" alt="{{ page.title }}">
+            </a>
+
+            {% endif %}
+            <!-- End Featured Image -->
+
+            <!-- Post Content -->
+            <div class="article-post" style="display:none;">
+                {{content}}
+            </div>
+
+            <script>
+                /*
+                - Make line breaks into <br/>
+                - Make paragraph breaks (marked with "==) to <p>
+                */
+                var original = $(".article-post").html();
+                //console.log(original);
+                var fixed = original
+                    .replace(/\\+\s*\\*\s*\=\=\s*\\+\s*\\*\s*/g, "NEWLINE")
+                    .replace(/<p>.*\=\=.*<\/p>/g, "NEWLINE")
+                    .replace(/<p>/g, "")
+                    .replace(/<\/p>/g, "<br/>")
+                    .replace(/NEWLINE/g, "</p><p>")
+                    .replace(/\_(.+)\_/g, "<em>$1</em>")
+                    .replace(/\*\*(.+)\*\*/g, "<strong>$1</strong>");
+                fixed = "<p>" + fixed + "</p>";
+                //console.log(fixed);
+                $(".article-post").html(fixed);
+                $(".article-post").show();
+
+                /* GET PAGE VIEWS */
+                //remove the category. In case the category was changed/moved, a regular expression is used.
+                var pageurl = "{{ page.url }}".replace(/^\/*/, "").replace(/[^\/]*/, "/.*");
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{{site.analytics_proxy_url}}/api/ganalytics/pagevies");
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.error) {
+                            console.log("Failed to request pageviews. Error: " + response.error);
+                        }
+                        else {
+
+                            if (!(isNaN(parseInt(response.views)))) {
+                                var postviewselement = document.getElementById("postViews");
+                                var postviewscontainer = document.getElementById("postviewscontainer");
+                                postviewselement.innerText = response.views;
+                                postviewscontainer.classList.add('postviews-visible');
+                            }
+                            console.log("Post views, page " + response.page + ": " + response.views);
+                        }
+                    }
+                    else {
+                        console.log("Failed to request pageviews. Stat: " + xhr.status);
+                    }
+                };
+                //the JSON to send is optional. If not sent, the current page url will be used.
+                //It's sent here because the category is trimmed and replaced with a regex
+                xhr.send(JSON.stringify({ "page": pageurl }));
+
+            </script>
+
+            {% if page.tags %}
+            <div style="margin-bottom: 20px;">
+                <a class="alltagslink" href="/tags.html" title="Всички тагове" style="float:left; margin-right:10px;"><img
+                        src="/assets/images/bookmark-color.png"></a>
+                <div style="float:left;">
+                    <span class="tagheader">Тагове:</span>
+                    <ul class="tags">
+                        {% assign sortedTags = page.tags | sort %}
+                        {% for tag in sortedTags %}
+                        <li>
+                            <a href="{{ site.baseurl }}/tag/{{ tag | slugify }}/">{{ tag }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Post Date 
+            <p>
+                <small>
+                    <span class="post-date"><time class="post-date" datetime="{{ page.date | date:"%Y-%m-%d" }}">{{
+                            page.date | date_to_string }}</time></span>
+                    {% if page.last_modified_at %}
+                    (Updated: <time datetime="{{ page.last_modified_at | date_to_xmlschema }}" itemprop="dateModified">{{
+                        page.last_modified_at | date: "%b %-d, %Y" }}</time>)
+                    {% endif %}
+                </small>
+            </p>
+            -->
+            <!-- Post Categories 
+            <div class="after-post-tags">
+                <ul class="tags">
+                    {% assign sortedCategories = page.categories | sort %}
+                    {% for category in sortedCategories %}
+                    <li>
+                        <a href="{{ site.baseurl }}/category/{{ category | slugify }}/">{{ category }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            -->
+            <!-- End Categories -->
+
+            <!-- Prev/Next 
+            <div class="row PageNavigation d-flex justify-content-between font-weight-bold">
+                {% if page.previous.url %}
+                <a class="prev d-block col-md-6" href="{{page.previous.url | absolute_url}}"> &laquo;
+                    {{page.previous.title}}</a>
+                {% endif %}
+                {% if page.next.url %}
+                <a class="next d-block col-md-6 text-lg-right" href="{{page.next.url | absolute_url}}">{{page.next.title}}
+                    &raquo; </a>
+                {% endif %}
+                <div class="clearfix"></div>
+            </div>
+            -->
+            <!-- End Categories -->
+
+        </div>
+        <!-- End Post -->
+
+    </div>
+</div>
+<!-- End Article
+================================================== -->
+
+
+
+<!-- Begin Comments
+================================================== -->
+<div class="container">
+    <div id="comments" class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            {% include disqus.html %}
+        </div>
+    </div>
+</div>
+{% if page.comments %}
+
+{% endif %}
+<!--End Comments
+================================================== -->
