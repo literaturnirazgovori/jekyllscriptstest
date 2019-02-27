@@ -41,6 +41,7 @@ comments: true
                 <!-- Post Title -->
                 <h1 class="posttitle">{{ page.title }}</h1>
                 <h2 class="postsubtitle">{{ page.subtitle }}</h2>
+                <div id="postviewscontainer-mobile" class="postviews"><span id="postViews-mobile"></span></div>
             </div>
             <div class="postinfo">
                 {% if page.author %}
@@ -107,7 +108,13 @@ comments: true
 
                 /* GET PAGE VIEWS */
                 //remove the category. In case the category was changed/moved, a regular expression is used.
-                var pageurl = "{{ page.url }}".replace(/^\/*/, "").replace(/[^\/]*/, "/.*");
+                //var pageurl = "{{ page.url }}".replace(/^\/+/, "").substr("{{ page.url }}".lastIndexOf("/" + 1)).replace(/\d{1,2}\-\d{1,2}(\-.*)/, ".*$1");
+                var pageurl = "{{ page.url }}";
+                pageurl = pageurl.replace(/^\/+/, "");
+                pageurl = pageurl.substr(pageurl.lastIndexOf("/") + 1);
+                pageurl = pageurl.replace(/\d{1,2}\-\d{1,2}(\-.*)/, ".*$1");
+
+                console.log("requesting views for: " + pageurl);
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "{{site.analytics_proxy_url}}/api/ganalytics/pagevies");
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -124,6 +131,11 @@ comments: true
                                 var postviewscontainer = document.getElementById("postviewscontainer");
                                 postviewselement.innerText = response.views;
                                 postviewscontainer.classList.add('postviews-visible');
+
+                                var postviewselementmobile = document.getElementById("postViews-mobile");
+                                var postviewscontainermobile = document.getElementById("postviewscontainer-mobile");
+                                postviewselementmobile.innerText = response.views;
+                                postviewscontainermobile.classList.add('postviews-visible');
                             }
                             console.log("Post views, page " + response.page + ": " + response.views);
                         }
@@ -140,8 +152,8 @@ comments: true
 
             {% if page.tags %}
             <div style="margin-bottom: 20px;">
-                <a class="alltagslink" href="/tags.html" title="Всички тагове" style="float:left; margin-right:10px;"><img
-                        src="/assets/images/bookmark-color.png"></a>
+                <a class="alltagslink" href="/tags.html" title="Всички тагове"
+                    style="float:left; margin-right:10px;"><img src="/assets/images/bookmark-color.png"></a>
                 <div style="float:left;">
                     <span class="tagheader">Тагове:</span>
                     <ul class="tags">
