@@ -12,6 +12,7 @@ mailchimp-list: "https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a
 encoding: utf-8
 fb_app_id: "405644126912554"
 analytics_proxy_url: "https://warm-woodland-78106.herokuapp.com"
+exclude: ["admin/Components/ReactDraftWysiwyg/node_modules"]
 
 # Authors
 authors:
@@ -30,7 +31,6 @@ authors:
 plugins:
   - jekyll-paginate
   - jekyll-archives
-
 
 # Archives
 jekyll-archives:
@@ -53,8 +53,7 @@ collections:
     output: true
 
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
       type: category
     values:
