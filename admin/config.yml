@@ -1,7 +1,9 @@
 backend:
   name: github
-  repo: literaturnirazgovori/literaturnirazgovori.github.io # Path to your Github repository
-  branch: work # Branch to update
+  # repo: literaturnirazgovori/literaturnirazgovori.github.io # Path to your Github repository
+  repo: literaturnirazgovori/jekyllscriptstest
+  # branch: work # Branch to update
+  branch: master
   base_url: https://warm-woodland-78106.herokuapp.com
 
 # publish_mode: editorial_workflow
