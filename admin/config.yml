@@ -17,7 +17,6 @@ collections:
     create: true # Allow users to create new documents in this collection
     slug: "{{year}}-{{month}}-{{day}}-{{hour}}-{{minute}}-{{slug}}" # Filename template i.e. YYYY-MM-DD-title.md
     fields: # The fields for each document, usually in front matter
-      - { label: "Redirect from", name: "redirect_from", widget: "list" }
       - { label: "Layout", name: "layout", widget: "hidden", default: "post" }
       - { label: "Hidden", name: "hidden", widget: "boolean", default: true }
       - { label: "Title", name: "title", widget: "string" }
@@ -66,3 +65,4 @@ collections:
         dateFormat: "YYYY-MM-DD"
         timeFormat: "HH:mm"
         required: false
+      - { label: "Redirect from", name: "redirect_from", widget: "list" }
