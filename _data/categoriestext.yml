@@ -1,3 +1,7 @@
+mybooks:
+  name: mybooks
+  text: Моите книги
+
 talks:
   name: talks
   text: Разговори за писането

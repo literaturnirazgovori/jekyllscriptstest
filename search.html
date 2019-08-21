@@ -59,22 +59,22 @@ title: Търсене
                     var year = date.getFullYear();
                     return day + ' ' + months[monthIndex + 1] + ' ' + year;
                 case 'category':
-                    return "<a href='/category/" + value + "'>" + categoriestext[value].text + "</a>";//"<a href=\"/category/" + categoriestext[value].name + "\">" + categoriestext[value].text + "</a>";
+                    return "<a href='/category/" + value + "'>" + categoriestext[value].text + "</a>";
             }
         }
 
         function bodyloaded() {
-            var searchbox = document.getElementById("search-input");
+            var searchbox = document.getElementById("search-text");
             searchbox.value = getUrlParameter("search");
 
             var sjs = new SimpleJekyllSearch({
-                searchInput: document.getElementById('search-input'),
+                searchInput: document.getElementById('search-text'),
                 resultsContainer: document.getElementById('results-container'),
                 json: '/search.json'
             });
 
             window.simpleJekyllSearch = new SimpleJekyllSearch({
-                searchInput: document.getElementById('search-input'),
+                searchInput: document.getElementById('search-text'),
                 resultsContainer: document.getElementById('results-container'),
                 json: '/search.json',
                 searchResultTemplate: itemTemplate,
@@ -83,28 +83,14 @@ title: Търсене
                 fuzzy: false
             });
             setTimeout(() => {
-                window.simpleJekyllSearch.search(getUrlParameter("search"))
-            }, 1000);
-        }
-
-        //update the url query string, so that searches can be copied by addres.
-        function newsearch() {
-            window.history.replaceState({}, "ttt", window.location.pathname + "?search=" + $("#search-input").get(0).value);
+                window.simpleJekyllSearch.search(getUrlParameter("search"));
+                $("#search-text").focus();
+            }, 500);
         }
     </script>
 </head>
 
 <body onload="bodyloaded()">
-
-    <div class="section-title">
-        <label style="float: left; margin-right:15PX;">
-            <h2 style="margin-bottom:0;">Търсене:</h2>
-        </label>
-        <span style="display: block; overflow: hidden; border: 0;">
-            <input type="text" id="search-input" placeholder="Търси..." style="width: 100%;font-family: B52;" onkeyup="newsearch()" />
-        </span>
-    </div>
-
     <div id="search-container">
         <div class="categorylist">
             <div class="container" id="results-container">

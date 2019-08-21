@@ -5,14 +5,19 @@ title: Начало
 
 {% if page.url == "/" %}
 
-<!-- Featured
-================================================== -->
-<section class="featured-posts">
-  <!--
-    <div class="section-title">
-        <h2><span>Featured</span></h2>
+<!-- Featured ================================================== -->
+
+<!--=========== Banner ===========-->
+<a href="/category/mybooks">
+<div class="homepage-banner" style="background-image: url('/assets/images/dead-sea-book-banner.png');">
+    <div>
+        Новата ми книга
     </div>
-  -->
+</div>
+</a>
+<!--=========== Banner ===========-->
+
+<section class="featured-posts">
     <div class="row">
         {% assign allposts = site.posts %}
         {% for post in allposts reversed %}
@@ -33,13 +38,6 @@ title: Начало
 <!-- Posts Index
 ================================================== -->
 <section class="recent-posts">
-<!--
-    <div class="section-title">
-
-        <h2><span>Всички ({{ site.posts | size }})</span></h2>
-
-    </div>
--->
     <div class="row listrecent">
 
         {% for post in paginator.posts %}
